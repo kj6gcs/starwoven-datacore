@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------
+// CHARACTERS
+// ------------------------
+model Character {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  name      String
+  callsign  String?
+  role      String?
+  species   String?
+  homeworld String?
+
+  bio       String?         // FULL biography: backstory, appearance, personalities, arcs
+
+  imageUrl  String?
+  priority  Int      @default(0)
+
+  ships     Ship[]     @relation("ShipCrew")
+  factions  Faction[]  @relation("FactionMembers")
+  episodes  Episode[]  @relation("EpisodeCharacters")
+  tags      Tag[]      @relation("CharacterTags")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ------------------------
+// SHIPS
+// ------------------------
+model Ship {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  name        String
+  nickname    String?
+  registry    String?
+  manufacturer String?
+  model       String?
+  type        String?
+  yearBuilt   Int?
+
+  imageUrl    String?
+
+  specs       String?         // FULL ship specifications: decks, systems, engines, crew capacity, weapons
+  history     String?         // Optional: lore/history of the vessel
+
+  crew        Character[] @relation("ShipCrew")
+  factions    Faction[]   @relation("FactionShips")
+  tags        Tag[]       @relation("ShipTags")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ------------------------
+// LOCATIONS / WORLDS
+// ------------------------
+model Location {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique
+  name            String
+  where           String?
+  dominantSpecies String?
+  primaryLanguage String?
+
+  imageUrl        String?
+
+  description     String?         // World/Station description: environment, culture, politics
+  overview        String?         // Optional: summary, short lore chunk
+
+  tags            Tag[]    @relation("LocationTags")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ------------------------
+// FACTIONS
+// ------------------------
+model Faction {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  name        String
+
+  timeActive  String?
+  alignment   String?         // Canon alignment: hostile, neutral, Accord-aligned, lawful-chaotic axis
+  leader      String?
+
+  imageUrl    String?
+
+  purpose     String?         // High-level purpose/agenda of the faction
+  description String?         // Full historical/lore description (long form)
+
+  members     Character[] @relation("FactionMembers")
+  ships       Ship[]      @relation("FactionShips")
+  tags        Tag[]       @relation("FactionTags")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ------------------------
+// TECHNOLOGY
+// ------------------------
+model Technology {
+  id             Int       @id @default(autoincrement())
+  slug           String    @unique
+  name           String
+  originSpecies  String?
+  status         String?
+  imageUrl       String?
+
+  description    String?         // Full detail: mechanics, invention, lore
+
+  tags           Tag[] @relation("TechnologyTags")
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ------------------------
+// LORE ARTICLES
+// ------------------------
+model Lore {
+  id         Int      @id @default(autoincrement())
+  slug       String   @unique
+  title      String
+  era        String?
+  imageUrl   String?
+
+  content    String?         // Full lore article, formatted long-form text
+
+  tags       Tag[] @relation("LoreTags")
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ------------------------
+// EPISODES
+// ------------------------
+model Episode {
+  id          Int         @id @default(autoincrement())
+  slug        String      @unique
+  title       String
+  season      Int
+  episode     Int
+
+  discovery   String?
+  synopsis    String?          // Full episode description
+
+  imageUrl    String?
+
+  mainCast    Character[] @relation("EpisodeCharacters")
+  tags        Tag[]       @relation("EpisodeTags")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ------------------------
+// TAGS (shared across all)
+// ------------------------
+model Tag {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+
+  characters  Character[]  @relation("CharacterTags")
+  ships       Ship[]       @relation("ShipTags")
+  locations   Location[]   @relation("LocationTags")
+  factions    Faction[]    @relation("FactionTags")
+  technologies Technology[] @relation("TechnologyTags")
+  lores       Lore[]       @relation("LoreTags")
+  episodes    Episode[]    @relation("EpisodeTags")
+}
