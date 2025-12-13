@@ -2,9 +2,11 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
+
+
 
 generator client {
   provider = "prisma-client-js"
@@ -14,21 +16,29 @@ generator client {
 // CHARACTERS
 // ------------------------
 model Character {
-  id        Int       @id @default(autoincrement())
-  slug      String    @unique
+  id        Int     @id @default(autoincrement())
+  slug      String  @unique
   name      String
   callsign  String?
   role      String?
   species   String?
   homeworld String?
-
-  bio       String?         // FULL biography: backstory, appearance, personalities, arcs
-
+  bio       String?
   imageUrl  String?
-  priority  Int      @default(0)
+  priority  Int     @default(0)
 
+  // many-to-many relations(history / affiliations)
   ships     Ship[]     @relation("ShipCrew")
   factions  Faction[]  @relation("FactionMembers")
+
+  // primary/current assignment
+  primaryShipId    Int?
+  primaryShip      Ship?    @relation("PrimaryShip", fields: [primaryShipId], references: [id])
+
+  // primary/current faction
+  primaryFactionId Int?
+  primaryFaction   Faction? @relation("PrimaryFaction", fields: [primaryFactionId], references: [id])
+
   episodes  Episode[]  @relation("EpisodeCharacters")
   tags      Tag[]      @relation("CharacterTags")
 
@@ -58,6 +68,7 @@ model Ship {
   crew        Character[] @relation("ShipCrew")
   factions    Faction[]   @relation("FactionShips")
   tags        Tag[]       @relation("ShipTags")
+  primaryCrew    Character[] @relation("PrimaryShip")
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -105,6 +116,7 @@ model Faction {
   members     Character[] @relation("FactionMembers")
   ships       Ship[]      @relation("FactionShips")
   tags        Tag[]       @relation("FactionTags")
+  primaryMembers Character[] @relation("PrimaryFaction")
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
