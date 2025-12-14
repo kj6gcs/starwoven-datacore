@@ -15,7 +15,7 @@ const fastify: FastifyInstance = Fastify({
 
 async function buildServer() {
   await fastify.register(cors, {
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://starwoven-datacore.vercel.app/"],
   });
 
   fastify.get("/health", async () => {
@@ -37,8 +37,9 @@ async function buildServer() {
 async function start() {
   const app = await buildServer();
   try {
-    await app.listen({ port: 4000, host: "0.0.0.0" });
-    console.log("🚀 Fastify server running at http://localhost:4000");
+    const port = Number(process.env.PORT) || 4000;
+    await app.listen({ port, host: "0.0.0.0" });
+    app.log.info(`🚀 Fastify server running on port ${port}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);
