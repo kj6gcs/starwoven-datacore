@@ -1,14 +1,22 @@
-import type { FastifyPluginAsync } from "fastify";
-import { prisma } from "../prisma";
+import { FastifyInstance } from "fastify";
+import { PrismaClient } from "@prisma/client";
 
-export const charactersRoutes: FastifyPluginAsync = async (fastify) => {
+const prisma = new PrismaClient();
+
+export default async function charactersRoutes(fastify: FastifyInstance) {
   fastify.get("/api/characters", async () => {
     return prisma.character.findMany({
-      orderBy: [{ priority: "desc" }, { name: "asc" }],
+      orderBy: { priority: "desc" },
       include: {
-        primaryShip: { select: { slug: true, name: true } },
-        primaryFaction: { select: { slug: true, name: true } },
-        tags: true,
+        primaryShip: {
+          select: { slug: true, name: true },
+        },
+        primaryFaction: {
+          select: { slug: true, name: true },
+        },
+        tags: {
+          select: { id: true, name: true },
+        },
       },
     });
   });
@@ -19,17 +27,23 @@ export const charactersRoutes: FastifyPluginAsync = async (fastify) => {
     const character = await prisma.character.findUnique({
       where: { slug },
       include: {
-        primaryShip: { select: { slug: true, name: true } },
-        primaryFaction: { select: { slug: true, name: true } },
-        tags: true,
+        primaryShip: {
+          select: { slug: true, name: true },
+        },
+        primaryFaction: {
+          select: { slug: true, name: true },
+        },
+        tags: {
+          select: { id: true, name: true },
+        },
       },
     });
 
     if (!character) {
       reply.code(404);
-      return { error: "Character not found" };
+      return { message: "Character not found" };
     }
 
     return character;
   });
-};
+}

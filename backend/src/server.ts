@@ -1,9 +1,13 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 
-import { charactersRoutes } from "./routes/characters";
-import { shipsRoutes } from "./routes/ships";
-import { factionsRoutes } from "./routes/factions";
+import charactersRoutes from "./routes/characters";
+import shipsRoutes from "./routes/ships";
+import factionsRoutes from "./routes/factions";
+import episodesRoutes from "./routes/episodes";
+import locationsRoutes from "./routes/locations";
+import technologyRoutes from "./routes/technology";
+import loreRoutes from "./routes/lore";
 
 const fastify: FastifyInstance = Fastify({
   logger: true,
@@ -22,6 +26,10 @@ async function buildServer() {
   await fastify.register(charactersRoutes);
   await fastify.register(shipsRoutes);
   await fastify.register(factionsRoutes);
+  await fastify.register(episodesRoutes);
+  await fastify.register(locationsRoutes);
+  await fastify.register(technologyRoutes);
+  await fastify.register(loreRoutes);
 
   return fastify;
 }

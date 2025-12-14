@@ -105,22 +105,21 @@ export default async function Home() {
             alt="Starwoven Data Core Banner"
             width={1200}
             height={400}
-            className="mx-auto -mt-16"
+            className="mx-auto -mt-22"
             priority
           />
 
-          <p className="text-xl text-amber-400 -mt-16">
+          <p className="text-xl text-amber-400 -mt-22">
             Explore the people, ships, technologies, and factions of the
-            Starwoven universe. This Data Core is a living chronicle of the
-            story.
+            Starwoven universe.
           </p>
 
           <Image
-            src="/images/starwoven-updated.png"
+            src="/images/default.png"
             alt="Starwoven — The Crew of the Constellation"
-            width={1200}
-            height={400}
-            className="mx-auto rounded-2xl shadow-xl shadow-amber-400/75"
+            width={6400}
+            height={6400}
+            className="mx-auto w-full max-w-[800px] h-auto rounded-2xl shadow-xl shadow-amber-400/75 -mt-4"
           />
         </section>
 

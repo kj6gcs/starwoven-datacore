@@ -43,7 +43,11 @@ export default function Navbar() {
     ["/characters", "Characters"],
     ["/factions", "Factions"],
     ["/ships", "Ships"],
-    // add more later as you build them
+    ["/locations", "Locations"],
+    ["/episodes", "Episodes"],
+    ["/technology", "Technology"],
+    ["/lore", "Lore"],
+    // ["/timeline", "Timeline"],
   ] as const;
 
   return (

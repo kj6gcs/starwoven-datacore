@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import PageShell from "@/components/PageShell";
+import Image from "next/image";
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
@@ -33,31 +35,21 @@ async function getLocation(slug: string): Promise<Location | null> {
 }
 
 /* =========================
-   Layout Shell
-========================= */
-
-function Shell({ children }: { children: React.ReactNode }) {
-  return (
-    <main className="min-h-screen bg-stone-900 text-amber-400 p-10">
-      <div className="max-w-4xl mx-auto space-y-6">{children}</div>
-    </main>
-  );
-}
-
-/* =========================
    Page
 ========================= */
 
 export default async function LocationSlugPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const location = await getLocation(params.slug);
+  const { slug } = await params;
+
+  const location = await getLocation(slug);
   if (!location) return notFound();
 
   return (
-    <Shell>
+    <PageShell>
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-4xl font-bold">{location.name}</h1>
@@ -74,6 +66,19 @@ export default async function LocationSlugPage({
             : "—"}
         </div>
       </div>
+
+      {location.imageUrl ? (
+        <div className="relative w-full max-h-[420px] aspect-[16/9] rounded-2xl overflow-hidden border border-amber-400/40 shadow-xl shadow-amber-400/10">
+          <Image
+            src={location.imageUrl}
+            alt={location.name}
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 768px"
+            priority
+          />
+        </div>
+      ) : null}
 
       {/* Overview */}
       {location.overview ? (
@@ -106,6 +111,6 @@ export default async function LocationSlugPage({
           ← Back to Locations
         </Link>
       </div>
-    </Shell>
+    </PageShell>
   );
 }

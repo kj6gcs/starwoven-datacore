@@ -27,7 +27,8 @@ async function main() {
     where: { slug: "the-constellation" },
     update: {
       name: "The Constellation",
-      type: "Corvette-class",
+      type: "Multipurpose Civilian Vessel",
+      imageUrl: "/images/ships/theConnie.png",
       tags: { set: [{ id: tagShip.id }] },
     },
     create: {
@@ -38,7 +39,8 @@ async function main() {
       manufacturer: "Zenith Archforge Shipworks",
       model: "ISV Platform",
       type: "Corvette-class",
-      yearBuilt: 22107,
+      yearBuilt: 3020,
+      imageUrl: "/images/ships/theConnie.png",
       tags: { connect: [{ id: tagShip.id }] },
     },
   });
@@ -49,12 +51,14 @@ async function main() {
     update: {
       name: "V.E.I.L.",
       alignment: "Accord-aligned",
+      imageUrl: "/images/factions/VEILlogo.png",
       tags: { set: [{ id: tagFaction.id }] },
     },
     create: {
       slug: "veil",
       name: "V.E.I.L.",
       alignment: "Accord-aligned",
+      imageUrl: "/images/factions/VEILlogo.png",
       purpose: "Voidborne Espionage & Infiltration Legion",
       description:
         "Elite special forces unit specializing in covert operations, infiltration, and deep-space espionage.",
@@ -67,12 +71,14 @@ async function main() {
     update: {
       name: "Specters of the Rift",
       alignment: "Hostile",
+      imageUrl: "/images/factions/specters-logo.png",
       tags: { set: [{ id: tagFaction.id }] },
     },
     create: {
       slug: "specters-of-the-rift",
       name: "Specters of the Rift",
       alignment: "Hostile",
+      imageUrl: "/images/factions/specters-logo.png",
       purpose: "Rift-cult raiders seeking Arcwave-related tech",
       description:
         "A ruthless faction that believes in their divine right to control Arcwave secrets and the mythical Threadspace it unlocks.",
@@ -90,6 +96,8 @@ async function main() {
       species: "Human",
       homeworld: "Mars",
       bio: "Former VEIL operative and captain of the Constellation.",
+      imageUrl: "/images/characters/gavin-cross.webp",
+
       priority: 100,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,
@@ -105,6 +113,7 @@ async function main() {
       species: "Human",
       homeworld: "Mars",
       bio: "Former VEIL operative and captain of the Constellation.",
+      imageUrl: "/images/characters/gavin-cross.webp",
       priority: 100,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,
@@ -122,6 +131,7 @@ async function main() {
       species: "Human (Veltheri-descended)",
       homeworld: "Veltheris",
       bio: "A survivor of the Celestial Queen incident, now aboard the Constellation.",
+      imageUrl: "/images/characters/sora-caddell-fight.webp",
       priority: 90,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,
@@ -136,6 +146,7 @@ async function main() {
       species: "Human (Veltheri-descended)",
       homeworld: "Veltheris",
       bio: "A survivor of the Celestial Queen incident, now aboard the Constellation.",
+      imageUrl: "/images/characters/sora-caddell-fight.webp",
       priority: 90,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,
@@ -153,6 +164,7 @@ async function main() {
       species: "Human",
       homeworld: "Mars",
       bio: "A grounded, reliable combatant with a southern-inspired edge.",
+      imageUrl: "/images/characters/rosko.webp",
       priority: 80,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,
@@ -167,6 +179,7 @@ async function main() {
       species: "Human",
       homeworld: "Mars",
       bio: "A grounded, reliable combatant with a southern-inspired edge.",
+      imageUrl: "/images/characters/rosko.webp",
       priority: 80,
       primaryShipId: constellation.id,
       primaryFactionId: veil.id,

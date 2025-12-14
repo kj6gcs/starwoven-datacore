@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
+// import DossierCard from "@/components/DossierCard";
+// not going to use this for now, but leaving it in pleace for future reference
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
@@ -20,11 +23,21 @@ type Character = {
 };
 
 async function getCharacter(slug: string): Promise<Character | null> {
-  const res = await fetch(`${API}/api/characters/slug/${slug}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const url = `${API}/api/characters/slug/${slug}`;
+    const res = await fetch(url, { cache: "no-store" });
+
+    if (!res.ok) {
+      console.error("Character fetch failed:", res.status, url);
+      console.error("Body:", await res.text());
+      return null;
+    }
+
+    return res.json();
+  } catch (e) {
+    console.error("Character fetch threw:", e);
+    return null;
+  }
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -38,9 +51,11 @@ function Shell({ children }: { children: React.ReactNode }) {
 export default async function CharacterSlugPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const character = await getCharacter(params.slug);
+  const { slug } = await params;
+
+  const character = await getCharacter(slug);
   if (!character) return notFound();
 
   return (
@@ -57,6 +72,19 @@ export default async function CharacterSlugPage({
             .join(" • ") || "—"}
         </div>
       </div>
+
+      {character.imageUrl ? (
+        <div className="relative w-full max-h-[420px] aspect-[16/9] rounded-2xl overflow-hidden border border-amber-400/40 shadow-xl shadow-amber-400/10">
+          <Image
+            src={character.imageUrl}
+            alt={character.name}
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 768px"
+            priority
+          />
+        </div>
+      ) : null}
 
       <div className="rounded-2xl border border-amber-400/40 bg-gradient-to-b from-stone-900 to-stone-800 p-5 shadow-xl shadow-amber-400/10">
         <h2 className="text-2xl font-bold mb-3">Profile</h2>

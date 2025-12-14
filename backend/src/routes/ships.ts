@@ -1,41 +1,48 @@
-import type { FastifyPluginAsync } from "fastify";
-import { prisma } from "../prisma";
+import { FastifyInstance } from "fastify";
+import { PrismaClient } from "@prisma/client";
 
-export const shipsRoutes: FastifyPluginAsync = async (fastify) => {
-  // GET all ships (optional but handy)
+const prisma = new PrismaClient();
+
+export default async function shipsRoutes(fastify: FastifyInstance) {
   fastify.get("/api/ships", async () => {
     return prisma.ship.findMany({
-      orderBy: [{ name: "asc" }],
-      include: { tags: true },
+      orderBy: { name: "asc" },
+      include: {
+        tags: {
+          select: { id: true, name: true },
+        },
+      },
     });
   });
 
-  // GET ship by slug (includes primary crew + tags)
   fastify.get("/api/ships/slug/:slug", async (request, reply) => {
     const { slug } = request.params as { slug: string };
 
     const ship = await prisma.ship.findUnique({
       where: { slug },
       include: {
+        tags: {
+          select: { id: true, name: true },
+        },
         primaryCrew: {
-          orderBy: [{ priority: "desc" }, { name: "asc" }],
           select: {
             slug: true,
             name: true,
             callsign: true,
             role: true,
-            primaryFaction: { select: { slug: true, name: true } },
+            primaryFaction: {
+              select: { slug: true, name: true },
+            },
           },
         },
-        tags: true,
       },
     });
 
     if (!ship) {
       reply.code(404);
-      return { error: "Ship not found" };
+      return { message: "Ship not found" };
     }
 
     return ship;
   });
-};
+}

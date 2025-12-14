@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
@@ -9,6 +10,7 @@ type Episode = {
   season: number;
   episode: number;
   discovery?: string | null;
+  imageUrl?: string | null;
 };
 
 async function getEpisodes(): Promise<Episode[]> {
@@ -35,11 +37,13 @@ export default async function EpisodesPage() {
   return (
     <main className="min-h-screen bg-stone-900 text-amber-400 p-10">
       <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
         <div className="space-y-1">
           <h1 className="text-4xl font-bold">Episodes</h1>
           <p className="text-amber-300">{sorted.length} total</p>
         </div>
 
+        {/* Empty state */}
         {sorted.length === 0 ? (
           <Card>
             <div className="text-amber-300">No episodes yet.</div>
@@ -49,6 +53,25 @@ export default async function EpisodesPage() {
             {sorted.map((e) => (
               <Link key={e.slug} href={`/episodes/${e.slug}`}>
                 <Card>
+                  {/* Thumbnail */}
+                  {e.imageUrl ? (
+                    <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-amber-400/30 mb-3">
+                      <Image
+                        src={e.imageUrl}
+                        alt={e.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                  ) : (
+                    // Optional placeholder keeps card height consistent
+                    <div className="w-full aspect-[16/9] rounded-xl bg-stone-800/40 border border-amber-400/20 mb-3 flex items-center justify-center text-amber-200/40 text-sm">
+                      No Image
+                    </div>
+                  )}
+
+                  {/* Text content */}
                   <div className="text-xl font-bold">{e.title}</div>
                   <div className="text-amber-300">
                     Season {e.season} • Episode {e.episode}
